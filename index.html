@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js">
+    </script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript">
+        var app = angular.module("app", []);
+
+        app.controller("Ctrl", function($scope, $http) {
+            $scope.loading = true;
+            $scope.self = {};
+            $http.get('dimensionlist.json').success(function(dimensiondata) {
+                /*      console.log(dimensiondata.length);*/
+                $scope.dimension = dimensiondata;
+                window.dimensionlen = dimensiondata.length;
+                /*      console.log(Device);
+                      console.log(Dimension);*/
+
+            });
+            $http.get('advertiser.json').success(function(advertiserdata) {
+                /*      console.log(dimensiondata.length);*/
+                $scope.advertiser = advertiserdata;
+                window.advertiserlen = advertiserdata.length;
+                /*      console.log(Device);
+                      console.log(Dimension);*/
+
+            });
+            $http.get('testjson.json').success(function(globaldata) {
+                window.globaldatalen = globaldata.length;
+                $scope.globaldata = globaldata;
+                $scope.self.jsonData = globaldata[0];
+            });
+
+            $http.get('multislot.json').success(function(multislot) {
+
+                $scope.multislotdata = multislot;
+                window.multislotlen = multislot.length;
+
+
+            });
+            $http.get('layout.json').success(function(layoutdata) {
+                window.layoutdatalen = layoutdata.length;
+                $scope.layoutdata = layoutdata;
+                // $scope.self.jsonData = layoutdata[0];
+            });
+            // console.log($scope);
+            window.fileText = new Array();
+            $scope.test = function(dimen) {
+                document.getElementsByClassName("loader")[0].style.display = "block";
+                document.getElementsByClassName("iframelist")[0].innerHTML = '';
+
+
+                window.Device = document.getElementsByClassName("Device")[0];
+                Device = Device.options[Device.selectedIndex].text;
+                var advetiser = document.getElementsByClassName("advertiser")[0];
+                var advetiser = advetiser.options[advetiser.selectedIndex].text;
+                window.add = advetiser;
+
+                window.dimension = document.getElementsByClassName("dimension")[0];
+                dimension = dimension.options[dimension.selectedIndex].text;
+
+
+                if (dimension && dimension != 'All') {
+                    console.log(dimension);
+                } else {
+                    console.log('empty');
+                }
+
+                /*  console.log(advetiser);*/
+
+
+                for (var k = 0; k < advertiserlen; k++) {
+                    if (advetiser == $scope.advertiser[k].Advertiser) {
+                        window.advertisercss = $scope.advertiser[k].CSS;
+                        window.advertiserJS = $scope.advertiser[k].JS;
+                        window.Fallback = $scope.advertiser[k].Fallback;
+                        window.Fontlink = $scope.advertiser[k].Fontlink;
+                        window.Androidstore = $scope.advertiser[k].Androidstore;
+                        window.iosstore = $scope.advertiser[k].iosstore;
+                        window.MMPAndr = $scope.advertiser[k].MMPAndr;
+                        window.MMPIOS = $scope.advertiser[k].MMPIOS;
+                        window.Sample_Data = $scope.advertiser[k].Sample_Data;
+                        window.Single_Sample_Data = $scope.advertiser[k].Single_Sample_Data;
+                    } else {}
+
+                }
+                for (var i = 0; i < globaldatalen; i++) {
+                    window.globalcss = $scope.globaldata[i].CSS;
+                    window.globalHTML = $scope.globaldata[i].HTML;
+                    window.globalJS = $scope.globaldata[i].JS;
+                }
+                // console.log($scope.globaldata[0].CSS+"scope global");
+                window.globalmainJS = globalJS.replace('%7CAndrStore%7C', Androidstore);
+
+                window.globalmainJS = globalmainJS.replace('%7CIOSStore%7C', iosstore);
+                window.globalmainJS = globalmainJS.replace('%7CmmpAndr%7C', MMPAndr);
+                window.globalmainJS = globalmainJS.replace('%7CmmpIOS%7C', MMPIOS);
+
+                // window.advertiserJS=advertiserJS+"logo%3A%20%22images%2FAJIO%2Flogosmall.png%22%2C";
+                // window.globalmainJS=globalmainJS.replace('%7CStaticData%7C',advertiserJS);
+                // console.log(advertiserJS+'staticdata');
+                if (Device == "Android") {
+                    window.globalmainJS = globalmainJS.replace('%7CHomestore%7C', Androidstore);
+                } else {
+                    window.globalmainJS = globalmainJS.replace('%7CHomestore%7C', iosstore);
+                }
+                if (document.getElementsByClassName("singleval")[0].checked) {
+                    window.globalmainJS = globalmainJS.replace('%7CDYNAMIC%7CNOENCODING%7C', Single_Sample_Data);
+                    window.sampltest = Single_Sample_Data;
+                } else {
+                    window.globalmainJS = globalmainJS.replace('%7CDYNAMIC%7CNOENCODING%7C', Sample_Data);
+                    window.sampltest = Sample_Data;
+                }
+                if (document.getElementsByClassName('multislot')[0].checked) {
+
+                } else {
+                    console.log("asdsd");
+                    if (document.getElementsByClassName('fallback')[0].checked) {} else {
+                        window.Fallback = '';
+                    }
+                    window.mainglobalmainJS = new Array();
+                    window.finaljsdata = new Array();
+                    if (dimension && dimension != 'All') {
+                        for (var j = 0; j < dimensionlen; j++) {
+                            if ($scope.dimension[j].Dimension == dimension) {
+                                document.getElementsByClassName("iframelist")[0].innerHTML = '';
+                                var indexwidth = $scope.dimension[j].Dimension.indexOf('x');
+                                var width = $scope.dimension[j].Dimension.substr(0, indexwidth);
+                                var height = $scope.dimension[j].Dimension.substr(indexwidth + 1, $scope.dimension[j].Dimension.length);
+                                window.selectedads = $scope.selectedName1.Advertiser;
+                                console.log(selectedads);
+                                if (height <= 50) {
+                                    // console.log("50");
+                                    window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogosmall.png%22%2C";
+                                } else if (height > 50 && height <= 280) {
+                                    // console.log("280");
+
+                                    window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogomedium.png%22%2C";
+                                } else if (height > 280) {
+                                    // console.log("above 280");
+
+                                    window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogolarge.png%22%2C";
+
+                                }
+                                window.dimensioncss = $scope.dimension[j].CSS;
+                                window.dimensionJS = $scope.dimension[j].JS;
+                                window.dimensionAdJS = $scope.dimension[j].AdJS;
+                                window.mainglobalmainJS[j] = globalmainJS.replace('%7CDimensions%7C', dimensionJS);
+                                window.finaljsdata[j] = mainglobalmainJS[j].replace('%7CStaticData%7C', advertiserJSlogo);
+                                window.scripttag = "%3C%2Fscript%3E";
+                                window.fileText[j] = '<!DOCTYPE html><html><head> <title></title>' + decodeURIComponent(Fontlink) + '  <style type="text/css">' + decodeURIComponent(globalcss) + decodeURIComponent(dimensioncss) + decodeURIComponent(advertisercss) + '</style> <script type="text/javascript">' + decodeURIComponent(finaljsdata[j]) + decodeURIComponent(dimensionAdJS) + decodeURIComponent(Fallback) + decodeURIComponent(scripttag) + '</head><body>' + decodeURIComponent(globalHTML) + '</body></html>';
+                                var ifrm = document.createElement("iframe");
+                                ifrm.id = 'iframe' + j;
+                                ifrm.width = width;
+                                ifrm.height = height;
+
+                                var wraper = document.createElement("div");
+                                wraper.className = "wraper";
+                                var button = document.createElement("button");
+                                button.setAttribute("onclick", "expFile(" + j + ")");
+                                button.innerHTML = "Download";
+                                button.className = "btn  btn-info";
+                                button.style.marginTop = (height / 2) - 4 + "px";
+                                var dimenval = document.createElement("p");
+                                dimenval.innerHTML = $scope.dimension[j].Dimension;
+                                dimenval.style.marginTop = (height / 2) + "px";
+                                wraper.appendChild(dimenval);
+                                wraper.appendChild(ifrm);
+                                wraper.appendChild(button);
+                                document.getElementsByClassName("loader")[0].style.display = "none";
+                                document.getElementsByClassName("iframelist")[0].style.opacity = 0;
+                                for (var fade = 1; fade <= 10; fade++) {
+                                    document.getElementsByClassName("iframelist")[0].style.opacity = fade / 10;
+                                }
+                                document.getElementsByClassName("iframelist")[0].style.opacity = 1;
+                                document.getElementsByClassName("iframelist")[0].appendChild(wraper);
+                                var doc = document.getElementById('iframe' + j).contentWindow.document;
+                                doc.open();
+                                doc.write(fileText[j]);
+                                doc.close();
+                            } else {
+
+                            }
+                        }
+                    } else {
+                        console.log('empty');
+                        for (var j = 0; j < dimensionlen; j++) {
+
+
+                            var indexwidth = $scope.dimension[j].Dimension.indexOf('x');
+                            var width = $scope.dimension[j].Dimension.substr(0, indexwidth);
+
+                            var height = $scope.dimension[j].Dimension.substr(indexwidth + 1, $scope.dimension[j].Dimension.length);
+                            window.selectedads = $scope.selectedName1.Advertiser;
+                            // console.log(selectedads);
+                            if (height <= 50) {
+                                // console.log("50");
+                                window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogosmall.png%22%2C";
+                            } else if (height > 50 && height <= 280) {
+                                // console.log("280");
+
+                                window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogomedium.png%22%2C";
+                            } else if (height > 280) {
+                                // console.log("above 280");
+
+                                window.advertiserJSlogo = advertiserJS + "logo%3A%20%22images%2F" + selectedads + "%2Flogolarge.png%22%2C";
+
+                            }
+
+                            // console.log(advertiserJSlogo);
+                            window.dimensioncss = $scope.dimension[j].CSS;
+                            window.dimensionJS = $scope.dimension[j].JS;
+                            window.dimensionAdJS = $scope.dimension[j].AdJS;
+                            window.mainglobalmainJS[j] = globalmainJS.replace('%7CDimensions%7C', dimensionJS);
+                            window.finaljsdata[j] = mainglobalmainJS[j].replace('%7CStaticData%7C', advertiserJSlogo);
+
+                            // console.log(globalcss+"+dimensioncss");
+                            window.scripttag = "%3C%2Fscript%3E";
+
+                            window.fileText[j] = '<!DOCTYPE html><html><head> <title></title>' + decodeURIComponent(Fontlink) + '  <style type="text/css">' + decodeURIComponent(globalcss) + decodeURIComponent(dimensioncss) + decodeURIComponent(advertisercss) + '</style> <script type="text/javascript">' + decodeURIComponent(finaljsdata[j]) + decodeURIComponent(dimensionAdJS) + decodeURIComponent(Fallback) + decodeURIComponent(scripttag) + '</head><body>' + decodeURIComponent(globalHTML) + '</body></html>';
+                            var ifrm = document.createElement("iframe");
+
+                            ifrm.id = 'iframe' + j;
+                            ifrm.width = width;
+                            ifrm.height = height;
+                            var wraper = document.createElement("div");
+                            wraper.className = "wraper";
+                            var button = document.createElement("button");
+                            button.setAttribute("onclick", "expFile(" + j + ")");
+                            button.innerHTML = "Download";
+                            button.className = "btn  btn-info";
+                            button.style.marginTop = (height / 2) - 4 + "px";
+                            var dimenval = document.createElement("p");
+                            dimenval.innerHTML = $scope.dimension[j].Dimension;
+                            dimenval.style.marginTop = (height / 2) + "px";
+                            wraper.appendChild(dimenval);
+                            wraper.appendChild(ifrm);
+                            wraper.appendChild(button);
+                            document.getElementsByClassName("loader")[0].style.display = "none";
+                            document.getElementsByClassName("iframelist")[0].style.display = "block";
+                            document.getElementsByClassName("iframelist")[0].appendChild(wraper);
+                            /*var ifrm=document.createElement("iframe");
+                            ifrm.width=width;
+                            ifrm.height=height;
+                            document.getElementById('iframe'+j).appendChild(ifrm);
+                            document.getElementsByClassName("iframelist")[0].innerHTML+="<tr class='wraper'><td>"+$scope.dimension[j].Dimension+"</td><td id='iframe"+j+"'></td><td><button onclick='expFile("+j+")'>Download</button></td></tr>";*/
+                            var doc = document.getElementById('iframe' + j).contentWindow.document;
+                            doc.open();
+                            doc.write(fileText[j]);
+                            doc.close();
+
+                        }
+                    }
+
+
+                }
+
+
+
+
+            }
+
+        });
+
+        function expFile(j) 
+        {
+            // console.log(fileText[j]+"called");
+            finalval = encodeURIComponent(fileText[j]);
+            // console.log(globalmainJS);
+            window.downloadglobalmainJS = finalval.replace(sampltest, '%7CDYNAMIC%7CNOENCODING%7C');
+
+            var fileName = "index.html";
+            saveTextAsFile(decodeURIComponent(downloadglobalmainJS), fileName);
+        }
+
+        function saveTextAsFile(data, filename) {
+
+            if (!data) 
+            {
+                console.error('Console.save: No data')
+                return;
+            }
+
+            if (!filename) filename = 'console.json'
+
+            var blob = new Blob([data], {
+                    type: 'text/plain'
+                }),
+                e = document.createEvent('MouseEvents'),
+                a = document.createElement('a')
+            if (window.navigator && window.navigator.msSaveOrOpenBlob) 
+            {
+                window.navigator.msSaveOrOpenBlob(blob, filename);
+            } else 
+            {
+                var e = document.createEvent('MouseEvents'),
+                    a = document.createElement('a');
+
+                a.download = filename;
+                a.href = window.URL.createObjectURL(blob);
+                a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+                e.initEvent('click', true, false, window,
+                    0, 0, 0, 0, 0, false, false, false, false, 0, null);
+                a.dispatchEvent(e);
+                console.log(window.URL.createObjectURL(blob));
+            }
+
+        }
+
+        function insert() {
+            var doc = document.getElementById('iframe').contentWindow.document;
+            doc.open();
+            doc.write(fileText);
+            doc.close();
+        }
+        /*function fallback(){
+
+          if(document.getElementsByClassName('fallback')[0].checked){
+
+          }else{
+            console.log("not");
+          }
+        }*/
+    </script>
+</head>
+<style type="text/css">
+    body {
+        margin: 15px;
+    }
+
+    iframe#iframe {
+        width: 520px;
+        height: 640px;
+        margin-top: 10px;
+        border: 0;
+    }
+
+    iframe {
+        width: 430px;
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 0;
+        border: 0;
+        display: table;
+
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    .wraper {
+        border: 1px solid #595959;
+        width: 100%;
+        padding-left: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: dotted;
+    }
+
+    p {
+        width: 127px;
+        float: left;
+    }
+
+    .form-control {
+        width: 140px;
+        margin-right: 10px;
+    }
+
+    .loader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        top: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100px;
+        background-color: #0000008f;
+    }
+
+    .iframelist {
+        margin-top: 25px;
+        border-radius: 10px;
+        box-shadow: 0px 11px 18px #000;
+    }
+</style>
+
+<body ng-app="app">
+    <a href="multi.html">Multislot</a>
+    <div ng-controller="Ctrl">
+
+        <select ng-model="selectedName1" ng-options="x.Advertiser for x in advertiser" class="advertiser form-control " ng-change="test()" style="float: left;">
+        </select>
+        <input type="checkbox" ng-model='multislot' name="multislot" class="multislot" checked="checked" ng-click='test()' style="    margin-top: 12px;">Multislot</input>
+        <select ng-model="selectedName" class="dimension form-control" ng-change='test()' style="float: left;">
+            <option>All</option>
+            <option ng-repeat="x in dimension">{{x.Dimension}}</option>
+        </select>
+        <select ng-model="selectedName2" name="Device" class="Device form-control" ng-change='test()' style="    float: left;">
+            <option ng-model='Android'>Android</option>
+            <option ng-model='IOS'>IOS</option>
+        </select>
+        <input type="checkbox" ng-model='fallback' name="fallback" class="fallback" checked="checked" ng-click='test()' style="    margin-top: 12px;">Fallback</input>
+        <input type="checkbox" ng-model='singleval' name="singleval" class="singleval" checked="checked" ng-click='test()' style="    margin-top: 12px;margin-left: 10px;">Single Sample</input>
+
+        <br>
+
+        <div class="iframelist table-dark ">
+
+        </div>
+    </div>
+    <div style="background-image: url(https://loading.io/spinners/eclipse/lg.ring-loading-gif.gif);display: none;" class="loader" ng-show="loading"> </div>
+
+</body>
+
+</html>

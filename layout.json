@@ -1,0 +1,22 @@
+[
+	{
+		"layoutName":"L1",
+		"property"	: [
+			{
+				"CSS"	:	"testcss",
+				"JS" 	:	"testjs",
+				"HTML"	:	"testhtml"
+			}
+		],
+	},
+	{
+		"layoutName":"L2",
+		"property"	: [
+		{
+			"CSS"	:	"testss",
+			"JS"	:	"asdasd",
+			"HTML"	:	"asdasd",
+		}		
+		],
+	}
+]

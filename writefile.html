@@ -6,12 +6,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <script type="text/javascript">
    function saveTextAsFile (data, filename){
-
         if(!data) {
             console.error('Console.save: No data')
             return;
         }
-
         if(!filename) filename = 'console.json'
 
         var blob = new Blob([data], {type: 'text/plain'}),

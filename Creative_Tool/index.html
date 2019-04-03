@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js">
+    </script>
+    <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous">
+    </script>
+    <script type="text/javascript">
+        var app = angular.module("app", []);
+
+        app.controller("Ctrl", function($scope, $http,$location) 
+        {
+            var url=$location.protocol()+"://"+location.host+'/';
+            $scope.dropdowndim="All";
+            $scope.os="IOS";
+            // $scope.selectedName1="Nykaa";
+            $scope.loading = true;
+            $scope.self = {};
+            $scope.disablelist=['Ctrip'];
+            $http.get(url+'dimension').success(function(dimensiondata) 
+            {
+                $scope.dimension = dimensiondata;
+                window.dimensionlen = dimensiondata.length;
+            });
+            $http.get(url+'advertiser').success(function(advertiserdata) 
+            {
+                $scope.advertiser = advertiserdata;
+                window.advertiserlen = advertiserdata.length;
+                
+                $scope.creativefilter();
+            });
+            $http.get(url+'global').success(function(globaldata) 
+            {
+
+                window.globaldatalen = globaldata.length;
+                $scope.globaldata = globaldata;
+                $scope.self.jsonData = globaldata[0];
+            });            
+            $http.get(url+'overlay').success(function(overlaydata) 
+            {
+                window.overlaydatalen = overlaydata.length;
+                $scope.overlaydata = overlaydata;
+
+            });
+            window.fileText = new Array();
+            // window.reviewhtml =[[]];
+            window.reviewhtml =new Array();
+            $scope.creativefilter = function(dimen,toggle) 
+            {
+                // document.getElementsByClassName("loader")[0].style.display = "block";
+                document.getElementsByClassName("iframelist")[0].innerHTML = '';
+                // window.Device = document.getElementsByClassName("Device")[0];
+                // Device = Device.options[Device.selectedIndex].text;
+                window.Device=$scope.os;
+                // var advetiser = document.getElementsByClassName("advertiser")[0];
+                // var advetiser = advetiser.options[advetiser.selectedIndex].text;
+                window.advetiser=$scope.selectedName1;
+                window.add = advetiser;
+                // console.log('advetiser');
+                // console.log($scope.advertiser);
+                // console.log($scope.selectedName1);
+                // window.dimension = document.getElementsByClassName("dimension")[0];
+                // dimension = dimension.options[dimension.selectedIndex].text;
+                // window.dimension=$scope.dropdowndim;
+                if ($scope.dropdowndim != 'All') {
+                } else {
+                }
+                for (var k = 0; k < advertiserlen; k++) {
+                    if ($scope.selectedName1 == $scope.advertiser[k].Advertiser) {
+                        window.advertisercss = $scope.advertiser[k].CSS;
+                        window.advertiserJS = $scope.advertiser[k].JS;
+                        window.Fallback = $scope.advertiser[k].Fallback;
+                        window.Fontlink = $scope.advertiser[k].Fontlink;
+                        window.Androidstore = $scope.advertiser[k].Androidstore;
+                        window.iosstore = $scope.advertiser[k].iosstore;
+                        window.MMPAndr = $scope.advertiser[k].MMPAndr;
+                        window.MMPIOS = $scope.advertiser[k].MMPIOS;
+                        window.AddJS=$scope.advertiser[k].AddJS;
+                        window.Sample_Data = $scope.advertiser[k].Sample_Data;
+                        window.Single_Sample_Data = $scope.advertiser[k].Single_Sample_Data;
+                    } else {}
+                }
+                window.globalcss = $scope.globaldata[0].CSS;
+                window.globalHTML = $scope.globaldata[0].HTML;
+                window.globalJS = $scope.globaldata[0].JS;
+                window.globalmainJS = globalJS.replace('%7CAndrStore%7C', Androidstore);
+                window.globalmainJS = globalmainJS.replace('%7CIOSStore%7C', iosstore);
+                window.globalmainJS = globalmainJS.replace('%7CmmpAndr%7C', MMPAndr);
+                window.globalmainJS = globalmainJS.replace('%7CmmpIOS%7C', MMPIOS);
+                if ($scope.os == "Android") {
+                    window.globalmainJS = globalmainJS.replace('%7CHomestore%7C', Androidstore);
+                } else {
+                    window.globalmainJS = globalmainJS.replace('%7CHomestore%7C', iosstore);
+                }
+                if (dimen=="nooffer") {
+                    window.globalmainJS = globalmainJS.replace('%7CDYNAMIC%7CNOENCODING%7C', Single_Sample_Data);
+                    window.sampltest = Single_Sample_Data;
+                } else if(dimen=="noproduct"){
+                    window.globalmainJS = globalmainJS.replace('%7CDYNAMIC%7CNOENCODING%7C', "''");
+                    window.sampltest = "''";
+                }else{
+                    window.globalmainJS = globalmainJS.replace('%7CDYNAMIC%7CNOENCODING%7C', Sample_Data);
+                    window.sampltest = Sample_Data;
+                }
+                    window.mainglobalmainJS = new Array();
+                    window.finaljsdata = new Array();
+                    window.overlay = new Array();
+                    if ($scope.dropdowndim != 'All') 
+                    {
+                        //Dimesion Filter
+                        for (var j = 0; j < dimensionlen; j++) 
+                        {
+                            if ($scope.dimension[j].Dimension == $scope.dropdowndim) 
+                            {
+                                dimensionfilter(j);
+                            } 
+                        }
+                    } else 
+                    {
+                        for (var j = 0; j < dimensionlen; j++) 
+                        {
+                            dimensionfilter(j);
+                        }
+                    }
+                    function dimensionfilter(j)
+                    {
+
+                        var indexwidth = $scope.dimension[j].Dimension.indexOf('x');
+                        var width = $scope.dimension[j].Dimension.substr(0, indexwidth);
+                        var height = $scope.dimension[j].Dimension.substr(indexwidth + 1, $scope.dimension[j].Dimension.length);
+                        window.selectedads = $scope.selectedName1;
+                        if (height <= 50) 
+                        {
+                            window.advertiserJSlogo = advertiserJS + "logo%3A%22https%3A%2F%2Fcdn.atomex.net%2Fstatic%2Fcreatives%2F" + selectedads + "%2Fslogo.png%22%2C";
+                        }  else if (height > 50) 
+                        {
+                            window.advertiserJSlogo = advertiserJS + "logo%3A%22https%3A%2F%2Fcdn.atomex.net%2Fstatic%2Fcreatives%2F" + selectedads + "%2Fllogo.png%22%2C";
+                        }
+                        window.defaultimage=advertiserJSlogo+"default%3A%22https%3A%2F%2Fcdn.atomex.net%2Fstatic%2Fcreatives%2F"+selectedads+"%2F"+$scope.dimension[j].Dimension+".jpg%22%2C";
+                        window.dimensioncss = $scope.dimension[j].CSS;
+                        window.dimensionJS = $scope.dimension[j].JS;
+                        window.dimensionAdJS = $scope.dimension[j].AdJS;
+                        window.mainglobalmainJS[j] = globalmainJS.replace('%7CDimensions%7C', dimensionJS);
+                        if (document.getElementsByClassName("overlay")[0].checked) 
+                        {
+                            var overlaylink="overlay%3A%22https%3A%2F%2Fcdn.atomex.net%2Fstatic%2Fcreatives%2F"+selectedads+"%2Foverlay%2F"+$scope.dimension[j].Dimension+".jpg%22%2C";
+                            window.overlay[j]=mainglobalmainJS[j].replace('%7CStaticData%7C', '%7CStaticData%7C'+$scope.overlaydata[0].CSS+overlaylink);
+                            window.overlayjs=$scope.overlaydata[0].JS;
+                        }else
+                        {
+                             window.overlay[j]=mainglobalmainJS[j];
+                            window.overlayjs="";
+
+                        }
+                        window.finaljsdata[j] = overlay[j].replace('%7CStaticData%7C', defaultimage);
+                        window.scripttag = "%3C%2Fscript%3E";
+                        window.fileText[j] = '<!DOCTYPE html><html><head> <title></title>' + unescape(Fontlink) + '  <style type="text/css">' + unescape(globalcss) + unescape(dimensioncss) + unescape(advertisercss) + '</style> <script type="text/javascript">' + unescape(finaljsdata[j]) +unescape(AddJS) +unescape(dimensionAdJS)  +unescape(overlayjs)+ unescape(scripttag) + '</head><body>' + unescape(globalHTML) + '</body></html>';
+                        // console.log('j');
+                        // console.log(j);
+                        if(dimen=="overlay_preview"){
+                            reviewhtml[j]=fileText[j].replace('overlayIsEnabled:false','overlayIsEnabled:true')
+                        }else{
+                            reviewhtml[j]=fileText[j];
+                        }
+                        if(toggle=='pause')
+                        {
+                           fileText[j]=fileText[j].replace('overlayIsEnabled:true','overlayIsEnabled:false')
+                        }else if(toggle=='on')
+                        {
+                            fileText[j]=fileText[j].replace('overlayIsEnabled:false','overlayIsEnabled:true')
+                        }
+
+                        // reviewhtml[j].macro=$scope.dimension[j].Dimension;
+                        // reviewhtml[j].layout=$scope.dimension[j].layout;
+                        var ifrm = document.createElement("iframe");
+                        ifrm.id = 'iframe' + j;
+                        ifrm.width = width;
+                        ifrm.height = height;
+                        var wraper = document.createElement("div");
+                        wraper.className = "wraper";
+                        var button = document.createElement("button");
+                        button.setAttribute("onclick", "expFile(" + j + ",1,'"+$scope.dimension[j].Dimension+"')");
+                        var imagvalidate=document.createElement('img');
+                        var imagpath="https://cdn.atomex.net/static/creatives/"+selectedads+"/"+$scope.dimension[j].Dimension+".jpg";
+                        imagvalidate.src=imagpath;
+                        imagvalidate.setAttribute('onerror','imageloaderr('+j+',"'+imagpath+'")');
+                        imagvalidate.style.display="none";
+                        for(var d=0;d<$scope.disablelist.length;d++)
+                        {
+                            if(selectedads==$scope.disablelist[d]){
+                               button.setAttribute('disabled','disabled');
+                               button.setAttribute('title','You cant able to download'); 
+                            }
+                        }
+                        var inputmacro=document.createElement('TEXTAREA');
+                        inputmacro.setAttribute('type','text');
+                        inputmacro.innerHTML=$scope.dimension[j].macro;
+                        inputmacro.rows ="4";
+                        inputmacro.cols ="50";
+                        inputmacro.style.marginTop =  "20px";
+                        inputmacro.setAttribute('class','form-control inputmacro');
+                        button.innerHTML = "Download";
+                        button.className = "btn  btn-info";
+                        tagwrap=document.createElement('div');
+                        tagwrap.className="tagwrap";
+                        var dimenval = document.createElement("p");
+                        dimenval.innerHTML = $scope.dimension[j].Dimension;
+                        dimenval.style.marginTop =  "20px";
+                        wraper.appendChild(dimenval);
+                        wraper.appendChild(ifrm);
+                        tagwrap.appendChild(button);
+                        tagwrap.appendChild(imagvalidate);
+                        tagwrap.appendChild(inputmacro);
+                        wraper.appendChild(tagwrap);
+                        // document.getElementsByClassName("loader")[0].style.display = "none";
+                        // document.getElementsByClassName("iframelist")[0].style.display = "block";
+                        document.getElementsByClassName("iframelist")[0].appendChild(wraper);
+                        var doc = document.getElementById('iframe' + j).contentWindow.document;
+                        doc.open();
+                        doc.write(reviewhtml[j]);
+                        doc.close();
+
+                    }
+                    $scope.array=reviewhtml;
+                    console.log('$scope.array');
+                    console.log($scope.array);
+                }
+        
+        });
+// app.directive("preview", function () {
+//   function link(scope, element) {
+// console.log(scope);
+//     var iframe = document.createElement('iframe');
+//     var element0 = element[0];
+//     element0.appendChild(iframe);
+//     var body = iframe.contentWindow.document;
+//     var button = document.createElement("button");
+//     button.setAttribute("onclick", "expFile("+scope.id+")");
+//     element[0].appendChild(button);
+//     scope.$watch('content', function () {
+//       // body.innerHTML = scope.content;
+//         body.open();
+//         body.write(scope.content);
+//         body.close();
+
+//     });
+//   }
+
+//   return {
+//     link: link,
+//     restrict: 'E',
+//     scope: {
+//       content: '=',
+//       id:'='
+//     }
+//   };
+// });
+function imageloaderr(iframeid,location)
+{
+    document.getElementsByClassName('iframelist')[0].getElementsByClassName('btn-info')[iframeid].setAttribute('disabled','disabled');
+    document.getElementsByClassName('iframelist')[0].getElementsByClassName('btn-info')[iframeid].setAttribute('title','Default Image May Missing Place Image at Location:'+location);
+}
+
+function expFile(j,slots,dimension) 
+{
+    finalval = escape(fileText[j]);
+    window.downloadglobalmainJS = finalval.replace(sampltest, '%7CDYNAMIC%7CNOENCODING%7C');
+    var fileName = "index.html";
+    // window.Device = document.getElementsByClassName("Device")[0];
+    // Device = Device.options[Device.selectedIndex].text;
+
+    var zipname=dimension+"_"+add+"_"+slots+"S_"+Device;
+    var zip = new JSZip();
+    zip.file(fileName, unescape(downloadglobalmainJS));
+    zip.generateAsync({type:"blob"}).then(function (blob) { 
+        saveAs(blob, zipname+".zip"); 
+    });
+}
+
+function saveTextAsFile(data, filename) 
+{
+    if (!data) 
+    {
+        // console.error('Console.save: No data')
+        return;
+    }
+if (!filename) filename = 'console.json'
+var blob = new Blob([data], {
+        type: 'text/plain'
+    }),
+    e = document.createEvent('MouseEvents'),
+    a = document.createElement('a')
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) 
+    {
+        window.navigator.msSaveOrOpenBlob(blob, filename);
+    } else 
+    {
+        var e = document.createEvent('MouseEvents'),
+            a = document.createElement('a');
+
+        a.download = filename;
+        a.href = window.URL.createObjectURL(blob);
+        a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+        e.initEvent('click', true, false, window,
+            0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        a.dispatchEvent(e);
+    }
+
+}
+
+function insert() {
+    var doc = document.getElementById('iframe').contentWindow.document;
+    doc.open();
+    doc.write(fileText);
+    doc.close();
+}
+    </script>
+</head>
+<style type="text/css">
+    body {
+        margin: 15px;
+    }
+.tagwrap{
+    position: relative;
+    margin-right: 0;
+    width: 555px;
+    float: right;
+}
+    iframe#iframe {
+        width: 520px;
+        height: 640px;
+        margin-top: 10px;
+        border: 0;
+    }
+
+    iframe {
+        /*width: 480px;*/
+        box-shadow: 0px 11px 18px #000;
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 0;
+        border: 0;
+        display: table;
+
+    }
+.table-dark{
+color: black;
+background-color: #fff;
+}
+    button {
+        cursor: pointer;
+    }
+
+    .wraper {
+        border: 1px solid #595959;
+        width: 100%;
+        padding-left: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: dotted;
+        padding: 10px;
+    }
+
+    p {
+        width: 127px;
+        float: left;
+    }
+
+    .form-control {
+        width: 140px;
+        margin-right: 10px;
+    }
+.inputmacro {
+    /*display: table-row;*/
+    width: 400px;
+}
+    .loader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        top: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100px;
+        background-color: #0000008f;
+    }
+
+    .iframelist {
+        margin-top: 25px;
+        border-radius: 10px;
+        /*box-shadow: 0px 11px 18px #000;*/
+    }
+    .overlayoption{
+        width: 114px;
+        position: relative;
+        display: inline-table;
+    }
+</style>
+
+<body ng-app="app">
+    <div ng-controller="Ctrl">
+        <!-- <select ng-model="selectedName1" ng-options="x.Advertiser for x in advertiser" class="advertiser form-control " ng-change="creativefilter()" style="float: left;"> -->
+        </select>
+      <input type="text" ng-model="selectedName1" list="moni" ng-change="creativefilter()" style="float: left;" class="advertiser form-control ">
+      <datalist id="moni" >
+        <option  data-ng-repeat="ttl in advertiser" value="{{ttl.Advertiser}}" > 
+      </datalist>
+        <input type="checkbox" ng-model='multislot' name="multislot" class="multislot" checked="checked" ng-click='creativefilter()' style="    margin-top: 12px;display: none;" ></input>
+        <select ng-model="dropdowndim" class="dimension form-control" ng-change='creativefilter()' style="float: left;">
+            <option>All</option>
+            <option ng-repeat="x in dimension">{{x.Dimension}}</option>
+        </select>
+        <select ng-model="os" name="Device" class="Device form-control" ng-change='creativefilter()' style="    float: left;">
+            <option ng-model='Android'>Android</option>
+            <option ng-model='IOS'>IOS</option>
+        </select>
+        <input type="checkbox" ng-model='fallback' name="fallback" class="fallback" checked="checked" ng-click='creativefilter()' style="    margin-top: 12px;display: none;"></input>
+        <input type="checkbox" ng-model='overlay' name="overlay" class="overlay" checked="checked" ng-click='creativefilter()' style="    margin-top: 12px;">Overlay</input>
+        <div class="overlayoption" ng-show="overlay">
+            <label class="radio-inline"><input type="radio" name="overlaytoggle" ng-click="creativefilter('','on')" checked="checked">overlay on</label>
+            <label class="radio-inline"><input type="radio" name="overlaytoggle" ng-click="creativefilter('','pause')">overlay pause</label>
+        </div>
+        <label class="radio-inline"><input type="radio" name="preview" ng-click="creativefilter('noproduct')">No Products</label>
+        <label class="radio-inline"><input type="radio" name="preview" ng-click="creativefilter('nooffer')">Without Offer</label>
+        <label class="radio-inline"><input type="radio" name="preview" ng-click="creativefilter('overlay_preview')">Overlay Preview</label>
+        <br>
+        <div class="iframelist table-dark ">
+
+        </div>
+<!--         <div ng-repeat='(n,value) in array'>
+            <preview content="value" id='n'></preview><br>
+        </div> -->
+    </div>
+    <div style="background-image: url(https://loading.io/spinners/eclipse/lg.ring-loading-gif.gif);display: none;" class="loader" ng-show="loading"> </div>
+
+</body>
+
+</html>

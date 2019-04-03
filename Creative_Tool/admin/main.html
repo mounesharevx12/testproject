@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js"></script>
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<style type="text/css">
+	.divider{
+		border: 1px solid #ddd;
+	    height: 50px;
+	}
+</style>
+<script type="text/javascript">
+        var app = angular.module("app", []);
+        app.controller("Ctrl", function($scope, $http,$location) {
+            var url=$location.protocol()+"://"+location.host+'/';
+$scope.nav = function(path) {
+    $scope.filePath = path;
+}; 
+
+
+            $http.get(url+'advertiser').success(function(advertiserdata) {
+                $scope.advertiserlist = advertiserdata;
+	            $scope.selectfunct=function(){
+	            	
+	            	for(var i=0;i<$scope.advertiserlist.length;i++){
+		            	if($scope.advertiserlist[i].AdID==$scope.dropsel){
+	            			$scope.filter=$scope.advertiserlist[i];
+	            			$scope.filter.CSS=unescape($scope.advertiserlist[i].CSS);
+	            			$scope.filter.JS=unescape($scope.advertiserlist[i].JS);
+	            			$scope.filter.Androidstore=unescape($scope.advertiserlist[i].Androidstore);
+	            			$scope.filter.AddJS=unescape($scope.advertiserlist[i].AddJS);
+	            			$scope.filter.iosstore=unescape($scope.advertiserlist[i].iosstore);
+	            			$scope.filter.Fallback=unescape($scope.advertiserlist[i].Fallback);
+	            			$scope.filter.Fontlink=unescape($scope.advertiserlist[i].Fontlink);
+	            			$scope.filter.Sample_Data=unescape($scope.advertiserlist[i].Sample_Data);
+	            			$scope.filter.Single_Sample_Data=unescape($scope.advertiserlist[i].Single_Sample_Data);
+	            		}
+	            	}
+
+	            	console.log($scope.filter);
+	            }
+            });
+			$http.get(url+'multislot').success(function(multislotdata) {
+				$scope.multislotlist = multislotdata;
+				$scope.selectlayout=function(){
+					console.log($scope.layoutbox);
+					// $scope.filter=$scope.multislotlist;
+					for(var i=0;i<$scope.multislotlist.length;i++){
+						if($scope.multislotlist[i].layout==$scope.layoutbox)
+						{
+							$scope.filter=$scope.multislotlist[i];
+							$scope.filter.CSS=unescape($scope.multislotlist[i].CSS);
+							$scope.filter.JS=unescape($scope.multislotlist[i].JS);
+							$scope.filter.HTML=unescape($scope.multislotlist[i].HTML);
+							$scope.filter.AdJS=unescape($scope.multislotlist[i].AdJS);
+						}
+					}
+					
+				}
+			});
+			$http.get(url+'dimension').success(function(dimensiondata) {
+				$scope.dimesnionlist = dimensiondata;
+				$scope.selectdimension=function(){
+					console.log($scope.dimenbox);
+					for(var i=0;i<$scope.dimesnionlist.length;i++){
+						if($scope.dimesnionlist[i].Dimension==$scope.dimenbox)
+						{
+							$scope.filter=$scope.dimesnionlist[i];
+							$scope.filter.CSS=unescape($scope.dimesnionlist[i].CSS);
+							$scope.filter.JS=unescape($scope.dimesnionlist[i].JS);
+							$scope.filter.HTML=unescape($scope.dimesnionlist[i].HTML);
+							$scope.filter.AdJS=unescape($scope.dimesnionlist[i].AdJS);
+						}
+					}
+				}
+			});			
+			$http.get(url+'global').success(function(globaldata) {
+				$scope.globaldatalist = globaldata;
+				$scope.globaldatalist[0].CSS = unescape($scope.globaldatalist[0].CSS);
+				$scope.globaldatalist[0].JS = unescape($scope.globaldatalist[0].JS);
+				$scope.globaldatalist[0].HTML = unescape($scope.globaldatalist[0].HTML);
+				$scope.filter=$scope.globaldatalist[0];
+				// console.log($scope.filter);
+			});
+			$http.get(url+'staticcreative').success(function(staticcreativedata) {
+				$scope.staticcreative=staticcreativedata;
+
+				$scope.staticcreative[0].CSS = unescape($scope.staticcreative[0].CSS);
+				$scope.staticcreative[0].JS = unescape($scope.staticcreative[0].JS);
+				$scope.staticcreative[0].HTML = unescape($scope.staticcreative[0].HTML);
+				$scope.statdatalist=$scope.staticcreative[0];
+			});
+			$scope.validate=function(e){
+				$scope.dublicateid=false;
+				angular.forEach($scope.advertiserlist, function(value, key){
+					if(value.AdID==$scope.insertid){
+						$scope.dublicateid=true;
+						console.log(value.AdID);
+						 e.preventDefault();
+					}
+				});
+			}
+
+        });
+</script>
+<body ng-app="app" ng-controller="Ctrl">
+	<div class="container">
+
+		<nav class="navbar navbar-inverse">
+		  <ul class="nav navbar-nav">
+		    <li><a href="javascript:void(0)" ng-click="nav('advertiserupdate')">Advertiser Data Update</a></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('multislotupdate')">Multislot Data Update</a></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('dimupdate')">Dimension Data Update</a></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('globpdate')">Global Data Update</a></li>
+		    <li class="divider"></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('advertiserinsert')">Add Advertiser </a></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('multidesigninsert')">Add Multidesign </a></li>
+		    <li class="divider"></li>
+		    <li><a href="javascript:void(0)" ng-click="nav('staticdataupdate')">Update Staticcreative </a></li>
+		  </ul>
+		</nav>
+		<div ng-include="filePath"></div>
+	</div>
+</body>
+</html>

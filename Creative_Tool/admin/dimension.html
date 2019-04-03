@@ -1,0 +1,42 @@
+  <form class="form-horizontal" action="dimensionupdate" method="post" >
+    <div class="form-group">
+      <label class="control-label col-sm-2">Select Dimension</label>
+      <div class="col-sm-10">
+		<select ng-model="$parent.dimenbox" ng-change="selectdimension()" class="form-control">
+			<option ng-repeat="lay in dimesnionlist" >{{lay.Dimension}}</option>
+		</select>
+		<input type="" name="Dimension" value="{{dimenbox}}" style="display: none;"></input>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >CSS:</label>
+      <div class="col-sm-10">
+		<textarea name="CSS"   class="form-control"rows="4" cols="50">{{filter.CSS}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >JS:</label>
+      <div class="col-sm-10">
+		<textarea name="JS"   class="form-control"rows="4" cols="50">{{filter.JS}}</textarea>
+      </div>
+    </div>    
+   
+    <div class="form-group">
+      <label class="control-label col-sm-2" >AdJS:</label>
+      <div class="col-sm-10">
+		<textarea name="AdJS"   class="form-control"rows="4" cols="50">{{filter.AdJS}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >HTML:</label>
+      <div class="col-sm-10">
+		<textarea name="HTML"   class="form-control"rows="4" cols="50">{{filter.HTML}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">        
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default">update</button>
+      </div>
+    </div>
+  </form>
+

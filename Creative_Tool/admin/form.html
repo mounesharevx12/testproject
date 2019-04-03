@@ -1,0 +1,79 @@
+
+  <form class="form-horizontal" action="dbappend" method="post" >
+    <div class="form-group">
+      <label class="control-label col-sm-2">Select Advertiser</label>
+      <div class="col-sm-10">
+		<select ng-model="$parent.dropsel" ng-change="selectfunct()" class="form-control">
+			<option ng-repeat="ids in advertiserlist" >{{ids.AdID}}</option>	
+		</select>
+		<input type="" name="id" value="{{dropsel}}" style="display: none;"></input>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >CSS:</label>
+      <div class="col-sm-10">
+    <textarea name="CSS"   class="form-control"rows="4" cols="50">{{filter.CSS}}</textarea>
+      </div>
+    </div>     
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Advertiser:</label>
+      <div class="col-sm-10">
+	     {{filter.Advertiser}}
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >JS:</label>
+      <div class="col-sm-10">
+		<textarea name="JS"   class="form-control"rows="4" cols="50">{{filter.JS}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Androidstore:</label>
+      <div class="col-sm-10">
+		<textarea name="Androidstore"   class="form-control"rows="1" cols="50">{{filter.Androidstore}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >iosstore:</label>
+      <div class="col-sm-10">
+		<textarea name="iosstore"   class="form-control"rows="1" cols="50">{{filter.iosstore}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Fallback:</label>
+      <div class="col-sm-10">
+    <textarea name="Fallback"   class="form-control"rows="1" cols="50">{{filter.Fallback}}</textarea>
+      </div>
+    </div>     
+    <div class="form-group">
+      <label class="control-label col-sm-2" >AddJS:</label>
+      <div class="col-sm-10">
+		<textarea name="AddJS"   class="form-control"rows="4" cols="50">{{filter.AddJS}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Fontlink:</label>
+      <div class="col-sm-10">
+		<textarea name="Fontlink"   class="form-control"rows="1" cols="50">{{filter.Fontlink}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Sample_Data:</label>
+      <div class="col-sm-10">
+		<textarea name="Sample_Data"   class="form-control" rows="4" cols="50">{{filter.Sample_Data}}</textarea>
+      </div>
+    </div>    
+    <div class="form-group">
+      <label class="control-label col-sm-2" >Single_Sample_Data:</label>
+      <div class="col-sm-10">
+		<textarea name="Single_Sample_Data"   class="form-control"rows="4" cols="50">{{filter.Single_Sample_Data}}</textarea>
+      </div>
+    </div>
+
+    <div class="form-group">        
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default">update</button>
+      </div>
+    </div>
+  </form>
+

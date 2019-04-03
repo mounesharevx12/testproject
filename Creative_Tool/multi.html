@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.ocm/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.js"></script>
+    <script type="text/javascript">
+    var app = angular.module("app", []);
+    app.controller("Ctrl", function($scope, $http,$location) 
+    {
+        $scope.loading = true;
+        $scope.All='All';
+        $scope.self = {};
+        var url=$location.protocol()+"://"+location.host+'/';
+        window.defaultimage=[];
+        // $scope.selectedName1='Nykaa';
+        $scope.os="IOS";
+        $scope.disablelist=['Ctrip'];
+        $http.get(url+'dimension').success(function(dimensiondata) 
+        {
+            $scope.dimension = dimensiondata;
+            window.dimensionlen = dimensiondata.length;
+        });
+        $http.get(url+'advertiser').success(function(advertiserdata) 
+        {
+            $scope.advertiser = advertiserdata;
+            window.advertiserlen = advertiserdata.length;
+
+        });
+        window.fileText = new Array();
+        window.previewdata = new Array();
+        window.scope=$scope;
+        $http.get(url+'global').success(function(globaldata) 
+        {
+            window.globaldatalen = globaldata.length;
+            $scope.globaldata = globaldata;
+            $scope.self.jsonData = globaldata[0];
+        });
+        $http.get(url+'overlay').success(function(overlaydata) {
+            window.overlaydatalen = overlaydata.length;
+            $scope.overlaydata = overlaydata;
+            
+        });
+        $http.get(url+'multislot').success(function(multislot) 
+        {
+            $scope.multislotdata = multislot;
+            window.multislotlen = multislot.length;
+            $scope.multipreview();
+        });
+        $http.get(url+'sample').success(function(multisample) 
+        {
+            $scope.multisample = multisample;
+            window.multisamplelen = multisample.length;
+
+        });
+        $scope.multipreview = function(preview,toggle)
+        {
+            $scope.preview=preview;
+            var arr = [];
+            for (var count = 0; count < multislotlen; count++) 
+            {
+                if(arr.indexOf($scope.multislotdata[count].Dimension)==-1){
+                     arr.push($scope.multislotdata[count].Dimension);
+                }
+            }
+            $scope.arrayofdim = arr;
+            window.arrayofadvlen = $scope.advertiser.length
+            $scope.arrayofadv=$scope.advertiser;
+            document.getElementsByClassName("loader")[0].style.display = "block";
+            document.getElementsByClassName("iframelist")[0].innerHTML = '';
+            window.Device = document.getElementsByClassName("Device")[0];
+            Device = Device.options[Device.selectedIndex].text;
+            var advetiser=$scope.selectedName1;
+            var layoutcla = document.getElementsByClassName("layout")[0];
+            var layoutcla = layoutcla.options[layoutcla.selectedIndex].text;
+            window.add = advetiser;
+            window.dimension = document.getElementsByClassName("dimension")[0];
+            dimension = dimension.options[dimension.selectedIndex].text;
+            window.layoutval = document.getElementsByClassName("layout")[0];
+            layoutval = layoutval.options[layoutval.selectedIndex].text;
+            for (var k = 0; k < advertiserlen; k++) 
+            {
+                if (advetiser == $scope.advertiser[k].Advertiser) 
+                {
+                    window.advertisercss = $scope.advertiser[k].CSS;
+                    window.advertiserJS = $scope.advertiser[k].JS;
+                    window.Fallback = $scope.advertiser[k].Fallback;
+                    window.Fontlink = $scope.advertiser[k].Fontlink;
+                    window.Androidstore = $scope.advertiser[k].Androidstore;
+                    window.iosstore = $scope.advertiser[k].iosstore;
+                    window.MMPAndr = $scope.advertiser[k].MMPAndr;
+                    window.MMPIOS = $scope.advertiser[k].MMPIOS;
+                } 
+            }
+            window.selectedads = $scope.selectedName1;
+            if (dimension && dimension != 'All')
+            {
+                // console.log(dimension);
+                for(var n=0;n<multislotlen;n++)
+                {
+                    if($scope.multislotdata[n].Dimension==dimension)
+                    {
+                        dimensionfilterdata(n);
+                    }
+                }
+                
+            }else{
+                for(var n=0;n<multislotlen;n++)
+                {
+                    dimensionfilterdata(n);
+                }
+            }
+            function dimensionfilterdata(i)
+            {
+                var j=i;
+                // console.log($scope.multislotdata);
+                window.globalcss = $scope.multislotdata[i].CSS;
+                window.globalHTML = $scope.multislotdata[i].HTML;
+                window.globalJS = $scope.multislotdata[i].JS;
+                if (Device == "Android") 
+                {
+                    globalJS = globalJS.replace('%7CHomestore%7C', Androidstore);
+                } else {
+                    globalJS = globalJS.replace('%7CHomestore%7C', iosstore);
+                }
+                globalJS=globalJS.replace('%7CAndrStore%7C', Androidstore);
+                globalJS=globalJS.replace('%7CIOSStore%7C', iosstore);
+                var indexwidth = $scope.multislotdata[i].Dimension.indexOf('x');
+                var height = $scope.multislotdata[i].Dimension.substr(indexwidth + 1, $scope.multislotdata[i].Dimension.length);
+                if (height <= 50) 
+                {
+                window.advertiserJSlogo = advertiserJS + "logo%3A%22https%3A//cdn.atomex.net/static/creatives/" + selectedads + "/slogo.png%22%2C";
+                    }  else if (height > 50) {
+                        window.advertiserJSlogo = advertiserJS + "logo%3A%22https%3A//cdn.atomex.net/static/creatives/" + selectedads + "/llogo.png%22%2C";
+                    }
+                if (document.getElementsByClassName("overlay")[0].checked) 
+                    {
+                        var overlaylink=$scope.overlaydata[0].CSS+"overlay%3A%22https%3A//cdn.atomex.net/static/creatives/"+selectedads+"/overlay/"+$scope.multislotdata[i].Dimension+".jpg%22%2C";
+                        window.overlayjs=$scope.overlaydata[0].JS;
+                    }else{
+                         window.overlaylink=",";
+                        window.overlayjs=" ";
+
+                    }
+                defaultimage[i]=advertiserJSlogo+"default%3A%22https%3A//cdn.atomex.net/static/creatives/"+selectedads+"%2F"+$scope.multislotdata[i].Dimension+".jpg%22%2C"+overlaylink;
+                globalJS=globalJS.replace('%7CStaticData%7C', defaultimage[j]);
+                globalJS=globalJS.replace('%7CDimensions%7C',"");   
+                            window.scripttag = "%3C/script%3E";
+                window.fileText[j] = '<!DOCTYPE html><html><head> <title></title>' + unescape(Fontlink) + '  <style type="text/css">' + unescape(globalcss) +unescape(advertisercss)+ '</style> <script type="text/javascript">' + unescape(globalJS)  +unescape(overlayjs)+ unescape(scripttag) + '</head><body>' + unescape(globalHTML) + '</body></html>';
+                if(toggle=='pause')
+                {
+                   for(var n=0;n<fileText.length;n++)
+                    {
+                    fileText[n]=fileText[n].replace('overlayIsEnabled:true','overlayIsEnabled:false')
+                    }
+                }else if(toggle=='on')
+                {
+                    for(var n=0;n<fileText.length;n++)
+                    {
+                    fileText[n]=fileText[n].replace('overlayIsEnabled:false','overlayIsEnabled:true')
+                    } 
+                }
+                previewdata[j]=escape(fileText[j]);
+                if($scope.preview=="noproduct")
+                {
+                    previewdata[j]=previewdata[j].replace('%7CDYNAMIC%7CNOENCODING%7C', "''");
+                }else
+                {
+                    // console.log('$scope.multisample');
+                    // console.log($scope.multisample);
+                    // console.log(layoutval);
+                    for(var n=0;n<multisamplelen;n++)
+                    {
+                        if ($scope.multisample[n].slots == $scope.multislotdata[j].slots) 
+                        {
+                     previewdata[j]=previewdata[j].replace('%7CDYNAMIC%7CNOENCODING%7C',$scope.multisample[n].Sample_Data);
+                        }
+                    }
+                } 
+                if($scope.preview=="overlay_preview")
+                {
+
+                    previewdata[j]=previewdata[j].replace('overlayIsEnabled%3Afalse', 'overlayIsEnabled%3Atrue');
+                }
+                var ifrm = document.createElement("iframe");
+                var indexwidth = $scope.multislotdata[j].Dimension.indexOf('x');
+                var width = $scope.multislotdata[j].Dimension.substr(0, indexwidth);
+
+                var height = $scope.multislotdata[j].Dimension.substr(indexwidth + 1, $scope.multislotdata[j].Dimension.length);
+                var totalwidth = parseInt(width) ;
+                var totalheight = parseInt(height) ;
+                ifrm.id = 'iframe' + j;
+                ifrm.width = totalwidth;
+                ifrm.height = totalheight;
+                var wraper = document.createElement("div");
+                wraper.className = "wraper";
+                var button = document.createElement("button");
+                button.setAttribute("onclick", 'expFile(' + j + ','+$scope.multislotdata[j].slots+',"'+$scope.multislotdata[j].Dimension+'","")');
+                var imagvalidate=document.createElement('img');
+                var imagpath="https://cdn.atomex.net/static/creatives/"+selectedads+"/"+$scope.multislotdata[j].Dimension+".jpg";
+                imagvalidate.src=imagpath;
+                imagvalidate.setAttribute('onerror','imageloaderr('+j+',"'+imagpath+'")');
+                imagvalidate.style.display="none";
+                for(var d=0;d<$scope.disablelist.length;d++)
+                    {
+                        if(selectedads==$scope.disablelist[d]){
+                           button.setAttribute('disabled','disabled');
+                           button.setAttribute('title','You cant able to download'); 
+                        }
+                    }
+                button.innerHTML = "Download";
+                button.className = "btn  btn-info";
+                button.setAttribute('dimension',$scope.multislotdata[i].Dimension);
+                button.setAttribute('slots',$scope.multislotdata[i].slots);
+                button.style.marginTop =  "20px";
+                var dimenval = document.createElement("p");
+                dimenval.innerHTML = $scope.multislotdata[j].layout + "<br>Slots:" + $scope.multislotdata[j].slots+"<br> Dimension:"+$scope.multislotdata[j].Dimension;
+                dimenval.style.marginTop = (height / 2) + "px";
+                var inputmacro=document.createElement('TEXTAREA');
+                inputmacro.setAttribute('type','text');
+                inputmacro.style.marginTop =  "20px";
+                inputmacro.setAttribute('class','form-control inputmacro');
+                inputmacro.innerHTML=$scope.multislotdata[j].macros;
+                inputmacro.rows ="4";
+                inputmacro.cols ="50";
+                tagwrap=document.createElement('div');
+                tagwrap.className="tagwrap"
+                wraper.appendChild(dimenval);
+                wraper.appendChild(ifrm);
+                tagwrap.appendChild(button);
+                tagwrap.appendChild(inputmacro);
+                wraper.appendChild(tagwrap);
+                document.getElementsByClassName("iframelist")[0].appendChild(wraper);
+                var doc = document.getElementById('iframe' + j).contentWindow.document;
+                doc.open();
+                doc.write(unescape(previewdata[j]));
+                doc.close();
+            }
+        }
+    });
+function imageloaderr(iframeid,location)
+{
+    // console.log('iframeid');
+    // console.log(iframeid);
+    document.getElementsByClassName('iframelist')[0].getElementsByClassName('btn-info')[iframeid].setAttribute('disabled','disabled');
+    document.getElementsByClassName('iframelist')[0].getElementsByClassName('btn-info')[iframeid].setAttribute('title','Default Image May Missing Place Image at Location:'+location);
+}
+    function expFile(j,slots,dimension,sampledata) 
+    {
+        var fileName = "index.html";
+        window.Device = document.getElementsByClassName("Device")[0];
+        Device = Device.options[Device.selectedIndex].text;
+        var zipname=dimension+"_"+add+"_"+slots+"S_"+Device;
+        var zip = new JSZip();
+        zip.file(fileName, fileText[j]);
+        zip.generateAsync({type:"blob"}).then(function (blob) 
+        { 
+            saveAs(blob, zipname+".zip"); 
+        });
+    }
+    </script>
+</head>
+<style type="text/css">
+    body {
+        margin: 15px;
+    }
+    iframe#iframe 
+    {
+        width: 520px;
+        height: 640px;
+        margin-top: 10px;
+        border: 0;
+    }
+    iframe {
+        box-shadow: 0px 11px 18px #000;
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 0;
+        border: 0;
+        display: table;
+
+    }
+
+    button {
+        cursor: pointer;
+    }
+    .wraper 
+    {
+        border: 1px solid #595959;
+        width: 100%;
+        padding-left: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: dotted;
+    }
+    p {
+        width: 167px;
+        float: left;
+    }
+    .form-control {
+        width: 140px;
+        margin-right: 10px;
+    }
+    .inputmacro
+    {
+        width:  400px;
+    }
+    .loader 
+    {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        top: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100px;
+        background-color: #0000008f;
+    }
+    .table-dark{
+    color: black;
+    background-color: #fff;
+    }.tagwrap
+    {
+        position: relative;
+        margin-right: 0;
+        width: 555px;
+        float: right;
+    }
+    .iframelist 
+    {
+        margin-top: 25px;
+        border-radius: 10px;
+    }    
+    .overlayoption{
+        width: 114px;
+        position: relative;
+        display: inline-table;
+    }
+</style>
+<body ng-app="app">
+    <div ng-controller="Ctrl" >
+        <!-- <select ng-model="selectedName1" ng-options="x.Advertiser for x in advertiser" class="advertiser form-control " ng-change="multipreview()" style="float: left;"> -->
+        </select>
+      <input type="text" ng-model="selectedName1" list="moni" ng-change="multipreview()" style="float: left;" class="advertiser form-control ">
+      <datalist id="moni" >
+        <option  data-ng-repeat="ttl in advertiser" value="{{ttl.Advertiser}}" > 
+      </datalist>
+       <select ng-model="layout" name="layout" class="layout form-control" ng-change='multipreview()' style="    float: left; display: none;">
+        <option value>All</option>
+        <option ng-repeat="x in multislotdata">{{x.layout}}</option>
+       </select>
+       <select ng-model="All" class="dimension form-control" ng-change='multipreview()' style="float: left;">
+        <option >All</option>   
+        <option ng-repeat="v in arrayofdim">{{v}}</option>
+       </select>
+       <select name="Device" ng-model="os" class="Device form-control" ng-change='multipreview()' style="    float: left;">
+        <option ng-model='Android' >Android</option>
+        <option ng-model='IOS'>IOS</option>
+       </select>
+       <input type="checkbox" ng-model='fallback' name="fallback" class="fallback" checked="checked" ng-click='multipreview()' style="    margin-top: 12px;display: none;">
+        <input type="checkbox" ng-model='overlay' name="overlay" class="overlay" checked="checked" ng-click='multipreview()' style="    margin-top: 12px;">Overlay</input>
+        <div class="overlayoption" ng-show="overlay">
+            <label class="radio-inline"><input type="radio" name="overlaytoggle" ng-click="multipreview('','on')" checked="checked">overlay on</label>
+            <label class="radio-inline"><input type="radio" name="overlaytoggle" ng-click="multipreview('','pause')">overlay pause</label>
+        </div>
+        <label class="radio-inline"><input type="radio" name="preview" ng-click="multipreview('noproduct')">No Product</label>
+        <label class="radio-inline"><input type="radio" name="preview" ng-click="multipreview('overlay_preview')">Overlay Preview</label>
+        <!--Fallback-->
+       </input>
+        <br>
+        <div class="iframelist table-dark ">
+        </div>
+    </div>
+    <div style="background-image: url(https://loading.io/spinners/eclipse/lg.ring-loading-gif.gif);display: none;" class="loader" ng-show="loading"> </div>
+</body>
+</html>

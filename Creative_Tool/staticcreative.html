@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Static Creatives</title>
+</head>
+<body>
+    <script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-animate.js">
+    </script>
+    <script type="text/javascript" src="https://fastcdn.org/FileSaver.js/1.1.20151003/FileSaver.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous">
+    </script>
+    <style type="text/css">
+            body {
+        margin: 15px;
+    }
+
+    iframe#iframe {
+        width: 520px;
+        height: 640px;
+        margin-top: 10px;
+        border: 0;
+    }
+
+    iframe {
+box-shadow: 0px 11px 18px #000;
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        border: 0;
+        border: 0;
+        display: table;
+
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    .wraper {
+        border: 1px solid #595959;
+        width: 100%;
+        padding-left: 10px;
+        display: inline-block;
+        border-radius: 10px;
+        border-style: dotted;
+    }
+
+    p {
+        width: 127px;
+        float: left;
+    }
+
+    .form-control {
+        width: 140px;
+        margin-right: 10px;
+    }
+.inputmacro{
+    width:  400px;
+}
+    .loader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+        top: 0;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100px;
+        background-color: #0000008f;
+    }
+.table-dark{
+color: black;
+background-color: #fff;
+}.tagwrap{
+    position: relative;
+    margin-right: 0;
+    width: 555px;
+    float: right;
+}
+    .iframelist {
+        margin-top: 25px;
+        border-radius: 10px;
+        /*box-shadow: 0px 11px 18px #000;*/
+    }
+    .btn-info{  
+        float: right;
+        margin-right: 46%;
+        margin-top: 2%;
+    }
+    </style>
+<script type="text/javascript">
+    var app = angular.module("app", []);
+        app.controller("Ctrl", function($scope, $http,$location) {
+
+             window.fileText = new Array();
+             window.temparray = new Array();
+             // $scope.ads='Myntra';
+             $scope.dimval="ALL";
+             $scope.OS="Android";
+            var url=$location.protocol()+"://"+location.host+'/';
+            $http.get(url+'staticdimen').success(function(dimensiondata) {
+                $scope.dimension = dimensiondata;
+            });
+            $http.get(url+'advertiser').success(function(advertiserdata) {
+                $scope.advertiser = advertiserdata;
+                window.adslist= new Array();
+                angular.forEach($scope.advertiser,function(value,key){
+                    adslist.push(value.Advertiser);
+                });
+                $scope.adslist=adslist;
+                // console.log($scope.adslist);
+                $scope.staticdata();
+            });            
+            $http.get(url+'staticcreative').success(function(staticdata) {
+                $scope.staticcreative = staticdata;
+            });
+            $scope.staticdata=function()
+            {
+                // console.log('list');
+                // console.log($scope.ads);
+                // console.log($scope.inputads);
+                document.getElementsByClassName("iframelist")[0].innerHTML = '';
+                angular.forEach($scope.advertiser, function(value, key)
+                {
+                    if(value.Advertiser==$scope.ads)
+                    {
+                        $scope.selectedlist=value;
+
+                    }
+                });
+                // console.log($scope.selectedlist);
+                // console.log($scope.staticcreative);
+                // console.log($scope.dimension);
+                // console.log($scope.OS);
+                window.scripttag = "%3C%2Fscript%3E";
+                // console.log($scope.selectedlist.iosstore);
+                if($scope.OS=="IOS")
+                    {
+                        $scope.finaljs=$scope.staticcreative[0].JS.replace('%7CHomestore%7C', $scope.selectedlist.iosstore);
+                    }else{
+                        $scope.finaljs=$scope.staticcreative[0].JS.replace('%7CHomestore%7C', $scope.selectedlist.Androidstore);
+                    }
+                $scope.finaljs=$scope.finaljs.replace('%7CAndrStore%7C', $scope.selectedlist.Androidstore).replace('%7CIOSStore%7C', $scope.selectedlist.iosstore)
+                var staticdataform="";
+                 var arr = [];
+                 var design,i=0;
+                angular.forEach($scope.dimension, function(value, key)
+                {
+                    if(arr.indexOf(value.Dimension)==-1)
+                    {
+                        arr.push(value.Dimension);
+                        design='';
+                    }else{
+                        design="_"+i;
+                        i++;
+                    }
+                    staticdataform='image%3A%27https%3A//cdn.atomex.net/static/staticdco/'+$scope.ads+'/'+value.Dimension+design+'.gif%27';
+                    var dimensionarray=value.Dimension.split("x");;
+                    temparray[key]=$scope.finaljs.replace('%7CDimensions%7C',value.JS).replace('%7CStaticData%7C',staticdataform);
+                    fileText[key]='<!DOCTYPE html><html><head> <title></title>' + '<style type="text/css">' + unescape($scope.staticcreative[0].CSS)+ '</style> <script type="text/javascript">' +  unescape(temparray[key])+unescape(scripttag) + '</head><body>' + unescape($scope.staticcreative[0].HTML) + '</body></html>';
+                    var ifrm = document.createElement("iframe");
+                     ifrm.id = 'iframe' + key;
+                     ifrm.width = dimensionarray[0];
+                     ifrm.height = dimensionarray[1];
+                    var wraper = document.createElement("div");
+                    var dimvalue = document.createElement("p");
+                    dimvalue.innerHTML=value.Dimension;
+                    dimvalue.style.marginTop = (dimensionarray[1] / 2) + "px";
+                    wraper.className = "wraper";
+                    document.getElementsByClassName("iframelist")[0].appendChild(wraper);
+                    var button = document.createElement("button");
+                    button.setAttribute("onclick", "expFile("+key+",'"+value.Dimension+"','"+$scope.ads+"','"+$scope.OS+"')");
+                    button.innerHTML = "Download";
+                    var imagvalidate=document.createElement('img');
+                    var imagpath="https://cdn.atomex.net/static/staticdco/"+$scope.ads+"/"+value.Dimension+design+".gif";
+                    imagvalidate.src=imagpath;
+                    imagvalidate.setAttribute('onerror','imageloaderr('+key+',"'+imagpath+'")');
+                    imagvalidate.style.display="none";
+                    button.style.marginTop = (dimensionarray[1] / 2) + "px";
+                    button.className = "btn  btn-info";
+                    wraper.appendChild(dimvalue);
+                    wraper.appendChild(ifrm);
+                    wraper.appendChild(imagvalidate);
+                    wraper.appendChild(button);
+                    var doc = document.getElementById('iframe' + key).contentWindow.document;
+                    doc.open();
+                    doc.write(fileText[key]);
+                    doc.close();
+                   
+                });
+            }
+        });
+function imageloaderr(iframeid,location)
+{
+    // console.log('iframeid');
+    // console.log(iframeid);
+    // document.getElementsByClassName('iframelist')[0].getElementsByClassName('wraper')[iframeid].getElementsByClassName('btn-info')[0].setAttribute('disabled','disabled');
+    document.getElementsByClassName('iframelist')[0].getElementsByClassName('wraper')[iframeid].style.display="none";
+    // document.getElementsByClassName('iframelist')[0].getElementsByClassName('wraper')[iframeid].getElementsByClassName('btn-info')[0].setAttribute('title','Default Image May Missing Place Image at Location:'+location);
+}
+function expFile(key,dimension,add,device) 
+{
+    var fileName = "index.html";
+    var zipname=add+"_"+dimension+"_"+device+"_static";
+    var zip = new JSZip();
+    zip.file(fileName, unescape(fileText[key]));
+    zip.generateAsync({type:"blob"}).then(function (blob) { 
+        saveAs(blob, zipname+".zip"); 
+    });
+}
+</script>
+<div ng-app="app">
+    <div ng-controller="Ctrl">
+        <div class="row">
+        <div class="col-md-2">
+<!--             <select ng-model="ads" ng-change="staticdata()" class=" form-control ">
+                <option ng-repeat="ads in advertiser">{{ads.Advertiser}}</option>
+            </select>  --> 
+              <input type="text" data-ng-model="ads" list="moni" data-ng-change="staticdata()"  class=" form-control ">
+              <datalist id="moni" >
+                <option  data-ng-repeat="ttl in adslist" value="{{ttl}}" > 
+              </datalist> 
+        </div>
+<!--        <div class="col-md-2">
+            <select class=" form-control " ng-change="staticdata()" ng-model="dimval" >
+                <option>ALL</option>
+                <option ng-repeat="dimen in dimension">{{dimen.Dimension}}</option>
+            </select>
+        </div> -->      
+        <div class="col-md-2">
+            <select class=" form-control " ng-change="staticdata()" ng-model="OS" >
+                <option>Android</option>
+                <option>IOS</option>
+            </select>
+        </div>
+    </div>
+        <div class="iframelist table-dark ">
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

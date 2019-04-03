@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Creative Development App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script data-require="angular.js@*" data-semver="1.2.1" src="http://code.angularjs.org/1.2.1/angular.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-sanitize.min.js"></script>
+  <style type="text/css">
+    .wrapper{
+      width: 97%;
+      margin: auto;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<script type="text/javascript">
+        var app = angular.module("app",[]);
+        app.controller("Ctrl", function($scope, $http,$location) {
+          // var url=$location.protocol()+"://"+location.host+'/';
+          // console.log('called');
+          // $scope.singleslot='cpreview';
+          // $scope.multilot='multiview';
+          // $scope.OSinput='Android';
+          // $scope.advertiserinput='Nykaa';
+          // $scope.dimensioninput='All';
+          // $scope.feature="overlay";
+          // $http.get(url+'advertiser').success(function(advertiserdata) {
+          //   $scope.advertiserdata = advertiserdata;
+          //   });          
+          //   $http.get(url+'dimension').success(function(dimensiondata) {
+          //       $scope.dimensiondata = dimensiondata;
+          //   });
+          //   $http.get(url+'global').success(function(globaldata) {
+          //       $scope.globaldata = globaldata;
+          //   }); 
+          //   $http.get(url+'overlay').success(function(overlaydata) {
+          //       $scope.overlaydata = overlaydata;
+          //   });
+          //   $scope.newValue=function(value){
+          //     console.log(value);
+          //   }
+          //   $scope.getdata=function(radioval){
+          //     $scope.finallist=[];
+          //     console.log($scope.advertiserinput);
+          //     console.log($scope.dimensioninput);
+          //     console.log($scope.OSinput);
+          //     for (var k = 0; k < $scope.advertiserdata.length; k++) 
+          //     {
+          //       if ($scope.advertiserdata[k].Advertiser==$scope.advertiserinput) {
+          //           $scope.advertisercss = $scope.advertiserdata[k].CSS;
+          //           $scope.advertiserJS = $scope.advertiserdata[k].JS;
+          //           $scope.Fallback = $scope.advertiserdata[k].Fallback;
+          //           $scope.Fontlink = $scope.advertiserdata[k].Fontlink;
+          //           $scope.Androidstore = $scope.advertiserdata[k].Androidstore;
+          //           $scope.iosstore = $scope.advertiserdata[k].iosstore;
+          //           $scope.MMPAndr = $scope.advertiserdata[k].MMPAndr;
+          //           $scope.MMPIOS = $scope.advertiserdata[k].MMPIOS;
+          //           $scope.Sample_Data = $scope.advertiserdata[k].Sample_Data;
+          //           $scope.Single_Sample_Data = $scope.advertiserdata[k].Single_Sample_Data;
+          //       } 
+          //     }
+          //   }
+        });
+</script>
+<body ng-app="app" ng-controller="Ctrl">
+<div class="wrapper">
+  <ul class="nav nav-tabs">
+    <li class="active" ><a data-toggle="tab" href="#single"  >Single Slot</a></li>
+    <li><a data-toggle="tab" href="#multi">Multi Slot</a></li>
+    <li><a data-toggle="tab" href="#static">Static DCO</a></li>
+  </ul>
+<div ng-include="filePath"></div>
+  <div class="tab-content">
+    <div id="single" class="tab-pane fade in active">
+      <div class="embed-responsive embed-responsive-16by9">
+        <!-- <div ng-include="cpreview"></div> -->
+        <iframe src="cpreview"></iframe>
+      </div>
+    </div>
+    <div id="multi" class="tab-pane fade">
+      <div class="embed-responsive embed-responsive-16by9">
+        <!-- <div ng-include="multi.html"></div> -->
+        <iframe src="multiview"></iframe>
+      </div>
+    </div>    
+    <div id="static" class="tab-pane fade">
+      <div class="embed-responsive embed-responsive-16by9">
+        <!-- <div ng-include="multi.html"></div> -->
+        <iframe src="static"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
